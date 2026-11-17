@@ -3,7 +3,7 @@ import { cacheLife } from "next/cache";
 import { normalizeAmiiboList, normalizeDetail, type RawAmiibo } from "./normalize";
 import type { Amiibo, AmiiboDetail } from "./types";
 
-const apiBase = process.env.AMIIBO_API_BASE ?? "https://www.amiiboapi.com/api";
+const apiBase = process.env.AMIIBO_API_BASE ?? "https://www.amiiboapi.org/api";
 
 async function fetchJson(path: string): Promise<unknown> {
   const url = `${apiBase}${path}`;

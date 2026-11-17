@@ -22,7 +22,7 @@ public struct AmiiboAPIClient: Sendable {
     private let session: URLSession
 
     public init(
-        baseURL: URL = URL(string: "https://www.amiiboapi.com/api")!,
+        baseURL: URL = URL(string: "https://www.amiiboapi.org/api")!,
         session: URLSession = .shared
     ) {
         self.baseURL = baseURL

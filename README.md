@@ -2,7 +2,7 @@
 
 Search every amiibo, see which games it works with, and track the ones you own or want. Available as a web app (Next.js) and a native iOS app (SwiftUI). Both use the same backup format, so a collection can move between them.
 
-Data comes from [AmiiboAPI](https://www.amiiboapi.com/). Collections are stored on the device (browser `localStorage` on the web, `UserDefaults` on iOS). There is no account or backend.
+Data comes from [AmiiboAPI](https://www.amiiboapi.org/), which moved from amiiboapi.com to amiiboapi.org. Collections are stored on the device (browser `localStorage` on the web, `UserDefaults` on iOS). There is no account or backend.
 
 ## Features
 

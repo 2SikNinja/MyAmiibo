@@ -21,7 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Data from{" "}
           <a
             className="underline hover:text-foreground"
-            href="https://www.amiiboapi.com/"
+            href="https://www.amiiboapi.org/"
             target="_blank"
             rel="noreferrer"
           >

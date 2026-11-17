@@ -1,6 +1,6 @@
 import type { Amiibo, AmiiboDetail, GameUsage, PlatformUsage } from "./types";
 
-/** Shape of a single amiibo as returned by https://www.amiiboapi.com */
+/** Shape of a single amiibo as returned by https://www.amiiboapi.org */
 export type RawAmiibo = {
   amiiboSeries?: string;
   character?: string;
