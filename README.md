@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Amiibo Search Finder
 
-## Getting Started
+Search every amiibo, see which games it works with, and track the ones you own or want. Available as a web app (Next.js) and a native iOS app (SwiftUI). Both use the same backup format, so a collection can move between them.
 
-First, run the development server:
+Data comes from [AmiiboAPI](https://www.amiiboapi.com/). Collections are stored on the device (browser `localStorage` on the web, `UserDefaults` on iOS). There is no account or backend.
+
+## Features
+
+- Search by name, character, or series (ignores case and accents)
+- Filter by type (figure, card, yarn, band), amiibo series, game series, and ownership
+- Sort by name or release date
+- Detail page with release dates by region and every game the amiibo works with on Switch, Wii U, and 3DS, including which features save data to the figure
+- Mark amiibo as owned or wishlist (the two are exclusive)
+- Collection stats: total owned, wishlist count, and completion per series
+- Export and import a JSON backup
+
+## Web app
+
+Next.js 16 (App Router, Cache Components), React 19, TypeScript, Tailwind CSS 4.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm test           # Vitest unit tests
+npm run typecheck
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The AmiiboAPI catalog is fetched on the server and cached for a day with `"use cache"` and `cacheLife("days")`. Set `AMIIBO_API_BASE` to point at a different API (for example a local mock).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+  app/                 Routes: / (browse), /amiibo/[id] (detail), /collection
+  components/          UI components
+  lib/
+    amiibo-api.ts      Server-only AmiiboAPI client with caching
+    normalize.ts       Raw API JSON to app models
+    filters.ts         Search, filters, and sorting
+    stats.ts           Collection stats
+    collection.ts      Owned/wishlist logic and backup parsing
+    use-collection.ts  localStorage-backed collection hook
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## iOS app
 
-## Learn More
+SwiftUI, iOS 17+, using `@Observable`, `NavigationStack`, and async/await. The Xcode project is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen) so it never has merge conflicts.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+brew install xcodegen
+cd ios
+xcodegen generate
+open AmiiboFinder.xcodeproj
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the core logic tests from the command line:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd ios/AmiiboCore
+swift test
+```
 
-## Deploy on Vercel
+```
+ios/
+  project.yml          XcodeGen spec
+  AmiiboCore/          Swift package: models, API client, decoding, filters, stats, tests
+  AmiiboFinder/
+    Stores/            CatalogStore (disk-cached catalog), CollectionStore
+    Views/             Browse, filters, detail, collection screens
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The catalog is cached on disk, so the app opens instantly and works offline. It refreshes once a day or on pull to refresh.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## CI
+
+GitHub Actions runs lint, typecheck, unit tests, and a production build for the web app. It also runs the Swift tests and builds the iOS app for the simulator on macOS.
