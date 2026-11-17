@@ -1,30 +1,36 @@
-# Amiibo Search Finder
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Amiibo Search Finder is a Flutter app that allows users to search and explore Amiibo figures. The app fetches Amiibo data from the AmiiboAPI and displays it in a grid view. Users can search for specific Amiibos, view their details, and save their favorite Amiibos to a list.
+## Getting Started
 
-## Features
+First, run the development server:
 
-- Fetches Amiibo data from AmiiboAPI (https://www.amiiboapi.com/)
-- Displays Amiibos in a grid view with images and names
-- Supports searching for Amiibos by name
-- Allows users to save their favorite Amiibos to a list using Shared Preferences
-- Shows Amiibo usage information when a user selects an Amiibo
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Dependencies
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-The app uses the following dependencies:
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-- `http`: For making API requests
-- `shared_preferences`: For saving favorite Amiibos locally
-- `flutter/material.dart`: For UI components
+## Learn More
 
-## Project Structure
+To learn more about Next.js, take a look at the following resources:
 
-The main files and folders in the project include:
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-- `main.dart`: The entry point of the app.
-- `LoadingScreen.dart`: A loading screen displayed while fetching Amiibo data from the API.
-- `AmiiboGridViewPage.dart`: The main page that displays Amiibos in a grid view and allows users to search for specific Amiibos.
-- `MyAmiiboList.dart`: A page that displays the user's favorite Amiibos.
-- `ShowUsagePage.dart`: A page that shows the usage information for a selected Amiibo.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
