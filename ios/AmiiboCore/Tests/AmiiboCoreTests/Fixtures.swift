@@ -1,0 +1,70 @@
+import Foundation
+
+enum Fixtures {
+    static let marioJSON = """
+    {
+      "amiiboSeries": "Super Smash Bros.",
+      "character": "Mario",
+      "gameSeries": "Super Mario",
+      "head": "00000000",
+      "tail": "00000002",
+      "image": "https://example.com/mario.png",
+      "name": "Mario",
+      "type": "Figure",
+      "release": { "au": "2014-11-29", "eu": "2014-11-28", "jp": "2014-12-06", "na": "2014-11-21" },
+      "games3DS": [
+        { "gameID": ["0004000000123400"], "gameName": "Super Smash Bros. for Nintendo 3DS",
+          "amiiboUsage": [{ "Usage": "Train a figure player", "write": true }] }
+      ],
+      "gamesSwitch": [
+        { "gameID": ["01006A800016E000"], "gameName": "Super Smash Bros. Ultimate",
+          "amiiboUsage": [{ "Usage": "Battle a figure player", "write": true }] },
+        { "gameID": ["0100000000010000"], "gameName": "Super Mario Odyssey",
+          "amiiboUsage": [{ "Usage": "Unlock Mario's Builder Outfit", "write": false }] }
+      ],
+      "gamesWiiU": []
+    }
+    """
+
+    static let isabelleJSON = """
+    {
+      "amiiboSeries": "Animal Crossing",
+      "character": "Isabelle",
+      "gameSeries": "Animal Crossing",
+      "head": "01810000",
+      "tail": "02430502",
+      "image": "https://example.com/isabelle.png",
+      "name": "Isabelle - Winter Outfit",
+      "type": "Figure",
+      "release": { "au": null, "eu": "2016-03-18", "jp": null, "na": "2015-11-13" }
+    }
+    """
+
+    static let cardJSON = """
+    {
+      "amiiboSeries": "Animal Crossing",
+      "character": "Pokémon Trainer",
+      "gameSeries": "Animal Crossing",
+      "head": "01830000",
+      "tail": "02510502",
+      "image": "https://example.com/card.png",
+      "name": "Céleste",
+      "type": "Card",
+      "release": { "au": null, "eu": null, "jp": null, "na": null }
+    }
+    """
+
+    static let brokenJSON = #"{ "name": "Broken" }"#
+
+    static var listData: Data {
+        Data("{ \"amiibo\": [\(marioJSON), \(marioJSON), \(brokenJSON), \(isabelleJSON), \(cardJSON)] }".utf8)
+    }
+
+    static var marioDetailData: Data {
+        Data("{ \"amiibo\": \(marioJSON) }".utf8)
+    }
+
+    static let marioId = "0000000000000002"
+    static let isabelleId = "0181000002430502"
+    static let cardId = "0183000002510502"
+}
