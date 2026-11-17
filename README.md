@@ -1,30 +1,76 @@
 # Amiibo Search Finder
 
-Amiibo Search Finder is a Flutter app that allows users to search and explore Amiibo figures. The app fetches Amiibo data from the AmiiboAPI and displays it in a grid view. Users can search for specific Amiibos, view their details, and save their favorite Amiibos to a list.
+Search every amiibo, see which games it works with, and track the ones you own or want. Available as a web app (Next.js) and a native iOS app (SwiftUI). Both use the same backup format, so a collection can move between them.
+
+Data comes from [AmiiboAPI](https://www.amiiboapi.org/), which moved from amiiboapi.com to amiiboapi.org. Collections are stored on the device (browser `localStorage` on the web, `UserDefaults` on iOS). There is no account or backend.
 
 ## Features
 
-- Fetches Amiibo data from AmiiboAPI (https://www.amiiboapi.com/)
-- Displays Amiibos in a grid view with images and names
-- Supports searching for Amiibos by name
-- Allows users to save their favorite Amiibos to a list using Shared Preferences
-- Shows Amiibo usage information when a user selects an Amiibo
+- Search by name, character, or series (ignores case and accents)
+- Filter by type (figure, card, yarn, band), amiibo series, game series, and ownership
+- Sort by name or release date
+- Detail page with release dates by region and every game the amiibo works with on Switch, Wii U, and 3DS, including which features save data to the figure
+- Mark amiibo as owned or wishlist (the two are exclusive)
+- Collection stats: total owned, wishlist count, and completion per series
+- Export and import a JSON backup
 
+## Web app
 
-## Dependencies
+Next.js 16 (App Router, Cache Components), React 19, TypeScript, Tailwind CSS 4.
 
-The app uses the following dependencies:
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm test           # Vitest unit tests
+npm run typecheck
+npm run lint
+npm run build
+```
 
-- `http`: For making API requests
-- `shared_preferences`: For saving favorite Amiibos locally
-- `flutter/material.dart`: For UI components
+The AmiiboAPI catalog is fetched on the server and cached for a day with `"use cache"` and `cacheLife("days")`. Set `AMIIBO_API_BASE` to point at a different API (for example a local mock).
 
-## Project Structure
+```
+src/
+  app/                 Routes: / (browse), /amiibo/[id] (detail), /collection
+  components/          UI components
+  lib/
+    amiibo-api.ts      Server-only AmiiboAPI client with caching
+    normalize.ts       Raw API JSON to app models
+    filters.ts         Search, filters, and sorting
+    stats.ts           Collection stats
+    collection.ts      Owned/wishlist logic and backup parsing
+    use-collection.ts  localStorage-backed collection hook
+```
 
-The main files and folders in the project include:
+## iOS app
 
-- `main.dart`: The entry point of the app.
-- `LoadingScreen.dart`: A loading screen displayed while fetching Amiibo data from the API.
-- `AmiiboGridViewPage.dart`: The main page that displays Amiibos in a grid view and allows users to search for specific Amiibos.
-- `MyAmiiboList.dart`: A page that displays the user's favorite Amiibos.
-- `ShowUsagePage.dart`: A page that shows the usage information for a selected Amiibo.
+SwiftUI, iOS 17+, using `@Observable`, `NavigationStack`, and async/await. The Xcode project is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen) so it never has merge conflicts.
+
+```bash
+brew install xcodegen
+cd ios
+xcodegen generate
+open AmiiboFinder.xcodeproj
+```
+
+Run the core logic tests from the command line:
+
+```bash
+cd ios/AmiiboCore
+swift test
+```
+
+```
+ios/
+  project.yml          XcodeGen spec
+  AmiiboCore/          Swift package: models, API client, decoding, filters, stats, tests
+  AmiiboFinder/
+    Stores/            CatalogStore (disk-cached catalog), CollectionStore
+    Views/             Browse, filters, detail, collection screens
+```
+
+The catalog is cached on disk, so the app opens instantly and works offline. It refreshes once a day or on pull to refresh.
+
+## CI
+
+GitHub Actions runs lint, typecheck, unit tests, and a production build for the web app. It also runs the Swift tests and builds the iOS app for the simulator on macOS.
