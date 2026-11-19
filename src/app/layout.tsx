@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
+import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Amiibo Search Finder",
-    template: "%s | Amiibo Search Finder",
+    default: `${siteName}: Amiibo Search and Collection Tracker`,
+    template: `%s | ${siteName}`,
   },
-  description:
-    "Search every amiibo, see which games it works with, and track the ones you own or want.",
+  description: siteDescription,
+  applicationName: siteName,
+  openGraph: {
+    type: "website",
+    siteName,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
