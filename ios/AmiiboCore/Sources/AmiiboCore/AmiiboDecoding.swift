@@ -19,11 +19,16 @@ public enum AmiiboDecoding {
         return result
     }
 
-    /// The `?id=` endpoint returns a single object, but tolerate an array too.
-    public static func decodeDetail(_ data: Data) throws -> AmiiboDetail? {
+    /// Lookups can return a single object or an array. When an id is given,
+    /// only the entry with that id is used.
+    public static func decodeDetail(_ data: Data, id: String? = nil) throws -> AmiiboDetail? {
         let envelope = try JSONDecoder().decode(Envelope.self, from: data)
-        guard let raw = envelope.amiibo.first, let amiibo = makeAmiibo(raw) else { return nil }
-        return AmiiboDetail(amiibo: amiibo, usage: makeUsage(raw.platforms))
+        for raw in envelope.amiibo {
+            guard let amiibo = makeAmiibo(raw) else { continue }
+            if let id, amiibo.id.lowercased() != id.lowercased() { continue }
+            return AmiiboDetail(amiibo: amiibo, usage: makeUsage(raw.platforms))
+        }
+        return nil
     }
 
     // MARK: - Normalizing

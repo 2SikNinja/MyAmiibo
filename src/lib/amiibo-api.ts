@@ -57,9 +57,15 @@ export async function getAmiiboDetail(id: string): Promise<AmiiboDetail | null> 
   cacheLife("days");
 
   if (!/^[0-9a-f]{16}$/i.test(id)) return null;
-  const body = (await fetchJson(`/amiibo/?id=${id}&showusage`)) as {
+  // AmiiboAPI ignores showusage on ?id= lookups, so query by head and tail.
+  const head = id.slice(0, 8);
+  const tail = id.slice(8);
+  const body = (await fetchJson(`/amiibo/?head=${head}&tail=${tail}&showusage`)) as {
     amiibo?: RawAmiibo | RawAmiibo[];
   } | null;
-  const raw = Array.isArray(body?.amiibo) ? body.amiibo[0] : body?.amiibo;
+  const candidates = Array.isArray(body?.amiibo) ? body.amiibo : body?.amiibo ? [body.amiibo] : [];
+  const raw = candidates.find(
+    (candidate) => `${candidate.head}${candidate.tail}`.toLowerCase() === id.toLowerCase(),
+  );
   return raw ? normalizeDetail(raw) : null;
 }
