@@ -46,12 +46,14 @@ public struct AmiiboAPIClient: Sendable {
             url: baseURL.appendingPathComponent("amiibo/"),
             resolvingAgainstBaseURL: false
         )!
+        // AmiiboAPI ignores showusage on ?id= lookups, so query by head and tail.
         components.queryItems = [
-            URLQueryItem(name: "id", value: id),
+            URLQueryItem(name: "head", value: String(id.prefix(8))),
+            URLQueryItem(name: "tail", value: String(id.suffix(8))),
             URLQueryItem(name: "showusage", value: nil),
         ]
         do {
-            return try AmiiboDecoding.decodeDetail(try await get(components.url!))
+            return try AmiiboDecoding.decodeDetail(try await get(components.url!), id: id)
         } catch APIError.badStatus(let code) where code == 404 {
             return nil
         }

@@ -33,6 +33,12 @@ final class AmiiboDecodingTests: XCTestCase {
         XCTAssertEqual(try AmiiboDecoding.decodeDetail(data)?.amiibo.name, "Mario")
     }
 
+    func testDetailPicksTheRequestedIdFromAList() throws {
+        let data = Data("{ \"amiibo\": [\(Fixtures.isabelleJSON), \(Fixtures.marioJSON)] }".utf8)
+        XCTAssertEqual(try AmiiboDecoding.decodeDetail(data, id: Fixtures.marioId)?.amiibo.name, "Mario")
+        XCTAssertNil(try AmiiboDecoding.decodeDetail(data, id: "ffffffffffffffff"))
+    }
+
     func testMissingAmiiboKeyGivesEmptyList() throws {
         XCTAssertEqual(try AmiiboDecoding.decodeList(Data(#"{"code":404}"#.utf8)), [])
     }
