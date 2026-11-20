@@ -92,7 +92,7 @@ adb logcat -c
 adb shell am start -W -n "$PACKAGE/.MainActivity"
 
 # Browse: the catalog loads from AmiiboAPI and shows a result count.
-wait_for text '^[0-9]+ results?$' 45
+wait_for text '^[0-9]+ results?$' 60
 shot 1-browse
 assert_running
 
@@ -110,8 +110,17 @@ echo "First amiibo: $name"
 tap content-desc "^Mark .* as owned$"
 sleep 1
 tap content-desc "^$(python3 -c 'import re, sys; print(re.escape(sys.argv[1]))' "$name")"
-wait_for text '^(Works with [0-9]+ games?|AmiiboAPI doesn.t list any game features for this amiibo\.)$' 30
+wait_for text '^Release dates$' 20
 shot 2-detail
+# Game usage is further down the page; scroll until it shows.
+for _ in $(seq 6); do
+  if [ -n "$(center_of text '^(Works with [0-9]+ games?|AmiiboAPI doesn.t list any game features for this amiibo\.)$')" ]; then break; fi
+  adb shell input swipe 540 1800 540 700 300
+  sleep 2
+done
+wait_for text '^(Works with [0-9]+ games?|AmiiboAPI doesn.t list any game features for this amiibo\.)$' 10
+adb shell input swipe 540 1600 540 900 300
+shot 3-usage
 assert_running
 
 # Collection: the amiibo marked as owned shows up with stats.
@@ -119,7 +128,7 @@ adb shell input keyevent KEYCODE_BACK
 sleep 1
 tap text '^Collection$'
 wait_for text '^Owned \(1\)$' 15
-shot 3-collection
+shot 4-collection
 assert_running
 
 # Dark mode
@@ -127,7 +136,7 @@ adb shell cmd uimode night yes
 sleep 3
 tap text '^Browse$'
 wait_for text '^[0-9]+ results?$' 15
-shot 4-browse-dark
+shot 5-browse-dark
 assert_running
 adb shell cmd uimode night no
 
