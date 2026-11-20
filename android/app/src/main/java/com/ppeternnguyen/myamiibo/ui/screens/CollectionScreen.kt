@@ -274,6 +274,7 @@ private fun SeriesRow(entry: SeriesProgress) {
                 progress = { entry.fraction },
                 modifier = Modifier.fillMaxWidth(),
                 color = if (entry.isComplete) AmiiboColors.Owned else MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
         }
     }
