@@ -9,8 +9,38 @@ OUT=${1:-screenshots}
 mkdir -p "$OUT"
 
 dump() {
-  adb shell uiautomator dump /sdcard/ui.xml > /dev/null
+  adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 || true
   adb exec-out cat /sdcard/ui.xml
+}
+
+# Prints a small JPEG of a screenshot into the log, so it can be viewed even
+# where artifacts can't be downloaded.
+print_image() {
+  local file=$1
+  if command -v convert > /dev/null; then
+    echo "BEGIN-IMAGE $(basename "$file")"
+    convert "$file" -resize 360x -quality 70 jpg:- | base64 -w 0
+    echo
+    echo "END-IMAGE"
+  fi
+}
+
+print_diagnostics() {
+  echo "--- Visible text ---"
+  dump | python3 -c '
+import sys, xml.etree.ElementTree as ET
+try:
+    root = ET.fromstring(sys.stdin.read())
+except ET.ParseError as error:
+    print("Could not parse UI dump:", error)
+    sys.exit()
+for node in root.iter("node"):
+    label = node.get("text") or node.get("content-desc")
+    if label:
+        print(repr(label), node.get("bounds"))
+' || true
+  echo "--- Recent app log ---"
+  adb logcat -d -v brief | grep -iE "myamiibo|okhttp|AndroidRuntime|System.err" | tail -60 || true
 }
 
 # Prints the center "x y" of the first node whose attribute matches the regex.
@@ -36,6 +66,8 @@ wait_for() {
   echo "Timed out waiting for $attr ~ /$pattern/" >&2
   dump > "$OUT/last-ui.xml" || true
   adb exec-out screencap -p > "$OUT/failure.png" || true
+  print_diagnostics
+  print_image "$OUT/failure.png"
   return 1
 }
 
@@ -49,6 +81,7 @@ tap() {
 shot() {
   sleep "${2:-2}"
   adb exec-out screencap -p > "$OUT/$1.png"
+  print_image "$OUT/$1.png"
 }
 
 assert_running() {
