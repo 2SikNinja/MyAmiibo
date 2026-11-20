@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Back up the collection (shared preferences). The catalog cache is re-downloaded. -->
+<full-backup-content>
+    <include domain="sharedpref" path="collection.xml" />
+</full-backup-content>
