@@ -27,7 +27,7 @@ targets:
     info:
       path: AmiiboFinder/Info.plist
       properties:
-        CFBundleDisplayName: Amiibo Finder
+        CFBundleDisplayName: MyAmiibo
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}

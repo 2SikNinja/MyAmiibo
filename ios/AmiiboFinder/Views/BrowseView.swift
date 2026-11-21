@@ -16,7 +16,7 @@ struct BrowseView: View {
 
     var body: some View {
         content
-            .navigationTitle("Amiibo")
+            .navigationTitle("MyAmiibo")
             .navigationDestination(for: Amiibo.self) { amiibo in
                 AmiiboDetailView(amiibo: amiibo)
             }
