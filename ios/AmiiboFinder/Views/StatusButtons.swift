@@ -14,12 +14,14 @@ struct StatusButtons: View {
 
     var body: some View {
         let status = collectionStore.status(of: amiibo.id)
+        let isCompact = size == .compact
 
         HStack(spacing: 8) {
             statusButton(
                 isActive: status == .owned,
+                // Cards are narrow, so they use shorter labels.
                 activeTitle: "Owned",
-                inactiveTitle: "Own it",
+                inactiveTitle: isCompact ? "Own" : "Own it",
                 activeIcon: "checkmark.circle.fill",
                 inactiveIcon: "checkmark.circle",
                 tint: .green,
@@ -32,8 +34,8 @@ struct StatusButtons: View {
 
             statusButton(
                 isActive: status == .wishlist,
-                activeTitle: "Wishlist",
-                inactiveTitle: "Want it",
+                activeTitle: isCompact ? "Wanted" : "Wishlist",
+                inactiveTitle: isCompact ? "Want" : "Want it",
                 activeIcon: "star.fill",
                 inactiveIcon: "star",
                 tint: .orange,
@@ -62,6 +64,7 @@ struct StatusButtons: View {
             isActive ? activeTitle : inactiveTitle,
             systemImage: isActive ? activeIcon : inactiveIcon
         )
+        .symbolRenderingMode(.monochrome)
         .frame(maxWidth: .infinity)
         .font(size == .compact ? .caption.weight(.medium) : .body.weight(.medium))
         .lineLimit(1)
@@ -69,7 +72,9 @@ struct StatusButtons: View {
 
         Group {
             if isActive {
-                Button(action: action) { label }
+                // Without an explicit white, the icon picks up the app's red
+                // accent color on the green button.
+                Button(action: action) { label.foregroundStyle(.white) }
                     .buttonStyle(.borderedProminent)
             } else {
                 Button(action: action) { label }
